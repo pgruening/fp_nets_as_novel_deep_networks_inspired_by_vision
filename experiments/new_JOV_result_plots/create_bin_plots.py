@@ -7,7 +7,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 IM_OUT_FOLDER = 'experiments/new_JOV_result_plots/bin_plots'
 
-set_plt_font_size(40)
+set_plt_font_size(32)
 
 
 def get_fval_xy(x, y, gamma0, lv=1., lg=1.):
@@ -62,49 +62,50 @@ def bin_signal(x, num_bins=100):
     return x
 
 
-x_min = -4.
-x_max = +4.
+if __name__ == '__main__':
+    x_min = -4.
+    x_max = +4.
 
-y_min = 0.
-y_max = 8.
+    y_min = 0.
+    y_max = 8.
 
-N = 1000
+    N = 1000
 
-xx, yy = np.meshgrid(np.linspace(x_min, x_max, N),
-                     np.linspace(y_min, y_max, N))
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, N),
+                         np.linspace(y_min, y_max, N))
 
+    for gamma0 in [0., 20., 45., 90., 135., 160.]:
+        Z = get_fval_xy(xx, yy, gamma0)
+        Z = Z.clip(min=0)
+        Z = Z / Z.max()
 
-for gamma0 in [0., 20., 45., 90., 135., 160.]:
-    Z = get_fval_xy(xx, yy, gamma0)
-    Z = Z.clip(min=0)
-    Z = Z / Z.max()
+        fig, ax = plt.subplots(1, figsize=(15, 15))
+        plt.contour(yy, xx, Z, [0], colors='black', linewidths=3)
 
-    fig, ax = plt.subplots(1, figsize=(15, 15))
-    plt.contour(yy, xx, Z, [0], colors='black', linewidths=3)
+        Z = bin_signal(Z, 6)
+        im = ax.imshow(Z.T, extent=[y_min, y_max,
+                       x_min, x_max], vmin=-1, vmax=1)
+        plt.axis('equal')
 
-    Z = bin_signal(Z, 6)
-    im = ax.imshow(Z.T, extent=[y_min, y_max, x_min, x_max], vmin=-1, vmax=1)
-    plt.axis('equal')
+        textstr = f'gamma: {int(gamma0)}°'
+        props = dict(boxstyle='round', facecolor='white', alpha=0.75)
+        # place a text box in upper left in axes coords
 
-    textstr = f'gamma: {int(gamma0)}°'
-    props = dict(boxstyle='round', facecolor='white', alpha=0.75)
-    # place a text box in upper left in axes coords
+        if gamma0 == 0:
+            # add a colorbar
+            ax.text(0.45, 0.95, textstr, transform=ax.transAxes, fontsize=40,
+                    verticalalignment='top', bbox=props)
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
 
-    if gamma0 == 0:
-        # add a colorbar
-        ax.text(0.45, 0.95, textstr, transform=ax.transAxes, fontsize=40,
-                verticalalignment='top', bbox=props)
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+            cbar = plt.colorbar(im, cax=cax)
+            cbar.ax.locator_params(nbins=3)
 
-        cbar = plt.colorbar(im, cax=cax)
-        cbar.ax.locator_params(nbins=3)
+            fig.set_size_inches(10.56, 10)
+        else:
+            ax.text(0.45, 0.95, textstr, transform=ax.transAxes, fontsize=40,
+                    verticalalignment='top', bbox=props)
+            fig.set_size_inches(10, 10)
 
-        fig.set_size_inches(10.56, 10)
-    else:
-        ax.text(0.45, 0.95, textstr, transform=ax.transAxes, fontsize=40,
-                verticalalignment='top', bbox=props)
-        fig.set_size_inches(10, 10)
-
-    plt.savefig(join(IM_OUT_FOLDER, f'bin_plot_gamma{int(gamma0)}.pdf'))
-    plt.close()
+        plt.savefig(join(IM_OUT_FOLDER, f'bin_plot_gamma{int(gamma0)}.pdf'))
+        plt.close()

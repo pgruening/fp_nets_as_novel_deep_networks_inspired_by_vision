@@ -7,12 +7,11 @@ import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
 from datasets.ds_cifar10_compression_test import Cifar10JpegCompression
-from DLBio.helpers import (MyDataFrame, check_mkdir, search_rgx, load_json,
-                           set_plt_font_size, to_uint8_image, search_in_all_subfolders)
+from DLBio.helpers import (MyDataFrame, check_mkdir, load_json, search_rgx,
+                           to_uint8_image)
 from DLBio.pytorch_helpers import cuda_to_numpy
-from tqdm import tqdm
 from experiments.eval_methods import save_curve_plot
-
+from tqdm import tqdm
 
 RGXS = [r'(CifarJOVFPNet|CifarPyrResNet|CifarResNet|CifarJOVFPNet-RNBasic)_N(\d)_s(\d+)']
 BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_6'
@@ -280,5 +279,5 @@ def create_data_images():
 
 if __name__ == '__main__':
     create_data_images()
-    # create_df()
+    create_df()
     run_eval()
