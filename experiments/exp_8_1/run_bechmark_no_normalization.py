@@ -24,7 +24,7 @@ from DLBio.pytorch_helpers import get_device, get_num_params
 from helpers import load_model
 import random
 
-BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_8_1'
+BASE_FOLDER = 'fp_net_after_jov/experiments/exp_8_1'
 
 
 def get_options():
@@ -37,6 +37,10 @@ def get_options():
 
 def run_fgsm(in_options):
     model, model_name = setup(in_options)
+    # Usually, the data are normalized during batch-creation in the dataloader.
+    # However, the FGSM method expects images in range [0, 1]. Thus, the
+    # normalization step is done during model inference. By setting the model's
+    # 'pre_transform' attribute to sth. different than None (default value).
     model.pre_transform = NORMALIZE
     # test dataset
     dataloader = get_data_loader(
@@ -51,14 +55,17 @@ def run_fgsm(in_options):
     }
 
     # from: https://pypi.org/project/torchattacks/
-    # All images should be scaled to [0, 1] with transform[to.Tensor()] before used in attacks.
+    # All images should be scaled to [0, 1] with transform[to.Tensor()]
+    # before used in attacks.
     device = get_device()
+    # run for different epsilon values
     for i in [0, 1, 2, 4, 8, 16]:
         ctr = 0
         atk = torchattacks.FGSM(model, eps=float(i) / 255.)
         predictions = []
         orig_predictions = []
         labels_ = []
+        # batch-wise load images and distort them (atk)
         for images, labels in dataloader:
             assert images.min() >= 0. and images.max() <= 1.
 
@@ -72,6 +79,7 @@ def run_fgsm(in_options):
             pred = pred.max(-1)[1].cpu().numpy()
             labels = labels.cpu().numpy()
 
+            # create an example image for a successful adversarial attack
             is_wrong = list(np.nonzero(pred != labels)[0])
             idx = random.choice(is_wrong)
             confidence = confidences_[idx, pred[idx]].item()
@@ -94,6 +102,8 @@ def run_fgsm(in_options):
             predictions.append(pred)
             labels_.append(labels)
             orig_predictions.append(orig_pred)
+
+        # aggregate all data and write them to a json file
 
         predictions = np.concatenate(predictions)
         orig_predictions = np.concatenate(orig_predictions)
