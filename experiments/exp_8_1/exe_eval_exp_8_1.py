@@ -49,11 +49,8 @@ def run():
         df = update(df, file_path)
 
     df = df.get_df()
-    agg = dict()
     keys_ = get_robust_acc_keys(df.columns) + get_num_changes_keys(df.columns)
-    for key in keys_:
-        agg[key] = ('mean', 'std', 'max', 'min')
-
+    agg = {key: ('mean', 'std', 'max', 'min') for key in keys_}
     df_grouped = df.groupby(
         ['num_params', 'model_type', 'N'], as_index=False
     ).agg(agg)
@@ -96,13 +93,11 @@ def update(df, file_path):
 
 
 def get_robust_acc_keys(keys):
-    ra_keys = [x for x in keys if bool(re.match(RA_RGX, x))]
-    return ra_keys
+    return [x for x in keys if bool(re.match(RA_RGX, x))]
 
 
 def get_num_changes_keys(keys):
-    nc_keys = [x for x in keys if bool(re.match(NC_RGX, x))]
-    return nc_keys
+    return [x for x in keys if bool(re.match(NC_RGX, x))]
 
 
 if __name__ == '__main__':

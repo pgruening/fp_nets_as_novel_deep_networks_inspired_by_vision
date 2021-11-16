@@ -1,0 +1,1 @@
+{"model_type": "AllZero: CifarJOVFPNet", "in_dim": 3, "out_dim": 10, "model_kw": "N: 9;q: 2;"}

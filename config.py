@@ -13,20 +13,15 @@ should change it. For example, if the main repository upstream hosts some produc
  files and you don’t want to accidentally commit changes to those files, --skip-worktree is exactly what you want.
 """
 
-USER = 'philipp'
+USER = 'your_name'
 
-if USER == 'philipp':
-    DATA_FOLDER = '/data_ssd0/gruening/pytorch_datasets'
+if USER == 'your_name':
+    DATA_FOLDER = 'my_data_folder'
+    # see imagenet_sequential for more information
+    IMAGENET_LMDB = 'path_to_lmdb'
+    IM_NET_TRAIN = {'pc48': 'your/path'}
+    IM_NET_VAL = {'pc48': 'your/path'}
+    IM_NET_ENTROPY_SUBSET = 'data/im_net_entropy/npy'
     PRINT_FREQUENCY = 50
-    REPO_DIR = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov'
 
-DO_NOT_COPY = [
-    '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/test_cases']
-
-if USER == 'david':
-    DATA_FOLDER = '/data'  # mapped from '/nfshome/gmelin/Documents/Data' in docker_run.sh
-    PRINT_FREQUENCY = 50
-    # mapped from '/nfshome/gmelin/Documents/repos/fp_net_after_jov'
-    REPO_DIR = '/workingdir'
-    DO_NOT_COPY = [
-        '/workingdir/test_cases']
+DO_NOT_COPY = ['test_cases']

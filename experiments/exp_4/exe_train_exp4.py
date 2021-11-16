@@ -4,7 +4,7 @@ from os.path import join
 import torch
 import config
 from DLBio import kwargs_translator, pt_run_parallel
-from DLBio.helpers import check_mkdir, load_json, get_subfolders, search_rgx
+from DLBio.helpers import check_mkdir, load_json, search_rgx
 from helpers import get_data_loaders, load_model
 from log_tensorboard import log_tensorboard
 
@@ -45,9 +45,8 @@ DEFAULT_KWARGS = {
     'es_metric': 'val_acc',
 }
 
-MODELS = ['CifarJOVFPNet-RNBasic', 'CifarAbsReLU-LS-realAbs', 
-                    'CifarAbsReLU-LS-NoNorm', 'CifarJOVFPNet-NoNorm']
-
+MODELS = ['CifarJOVFPNet-RNBasic', 'CifarAbsReLU-LS-realAbs',
+          'CifarAbsReLU-LS-NoNorm', 'CifarJOVFPNet-NoNorm']
 
 
 class TrainingProcess(pt_run_parallel.ITrainingProcess):
@@ -73,8 +72,9 @@ def run():
     default_kwargs["nw"] = 4
 
     def param_generator():
-        for p in _param_generator(default_kwargs, base_folder, seeds=SEEDS, num_blocks=NUM_BLOCKS):
-            yield p
+        yield from _param_generator(
+            default_kwargs, base_folder, seeds=SEEDS, num_blocks=NUM_BLOCKS
+        )
 
     _run(param_generator)
 
@@ -129,8 +129,9 @@ def one_epoch_test():
     def param_generator():
         N = 5
         seed = 0
-        for p in _param_generator(default_kwargs, base_folder, seeds=[seed], num_blocks=[N]):
-            yield p
+        yield from _param_generator(
+            default_kwargs, base_folder, seeds=[seed], num_blocks=[N]
+        )
 
     _run(param_generator)
 
@@ -146,10 +147,7 @@ def check_tensorboard_one_epoch():
         folder = join(BASE_FOLDER, 'one_epoch_test',
                       'trained_models', folder_name)
 
-        if idx == 0:
-            add_images = True
-        else:
-            add_images = False
+        add_images = idx == 0
         _check_tensorboard(folder, out_name, add_images=add_images)
 
 
@@ -164,11 +162,7 @@ def _check_tensorboard(folder, out_name, *, add_images):
         'cpu'), new_model_path=join(folder, 'model.pt')
     )
 
-    if add_images:
-        data_loaders = get_data_loaders(options)
-    else:
-        data_loaders = None
-
+    data_loaders = get_data_loaders(options) if add_images else None
     log_tensorboard(folder, tb_out, data_loaders,
                     model=model, remove_old_events=True,
                     input_shape=(1, 3, 32, 32)
@@ -181,8 +175,7 @@ def _param_generator(default_kwargs, base_folder, seeds=SEEDS, num_blocks=NUM_BL
             for model_type in MODELS:
                 output = copy.deepcopy(default_kwargs)
 
-                model_kw = {'N': [N]}
-                model_kw['q'] = [2]
+                model_kw = {'N': [N], 'q': [2]}
                 output['model_kw'] = kwargs_translator.to_kwargs_str(model_kw)
 
                 output['folder'] = join(

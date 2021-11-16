@@ -6,10 +6,11 @@ import numpy as np
 from datasets import data_getter
 from DLBio.helpers import check_mkdir, to_uint8_image
 from DLBio.pytorch_helpers import cuda_to_numpy, get_device
+import config
 
 
 def save_some_images(n=100):
-    os.environ["IMAGENET"] = '/nfshome/gruening/my_code'
+    os.environ["IMAGENET"] = config.IMAGENET_LMDB
     dataloader = data_getter.get_data_loaders(
         'sequential_imagenet', 1, num_workers=2, use_cuda=False
     )['val']

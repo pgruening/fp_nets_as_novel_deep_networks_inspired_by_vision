@@ -17,6 +17,7 @@ from DLBio.helpers import check_mkdir, load_json, to_uint8_image
 from DLBio.pytorch_helpers import cuda_to_numpy, get_device
 from helpers import load_model
 from tqdm import tqdm
+import config
 
 MODEL_FOLDERS_ = [
     'experiments/imagenet_resnet/resnet50_imagenet_layer_start_q08',
@@ -28,7 +29,7 @@ BATCH_SIZE = 64
 
 
 def run():
-    os.environ["IMAGENET"] = '/nfshome/gruening/my_code'
+    os.environ["IMAGENET"] = config.IMAGENET_LMDB
     if False:
         dataloader = data_getter.get_data_loaders(
             'sequential_imagenet', batch_size=BATCH_SIZE, num_workers=1,

@@ -23,12 +23,12 @@ milestones=[100, 150], last_epoch=args.start_epoch - 1)"
 
 """
 import copy
+import glob
 from os.path import join
 
 import torch
 from DLBio import kwargs_translator, pt_run_parallel
-from DLBio.helpers import check_mkdir, load_json, get_subfolders, search_rgx
-import glob
+from DLBio.helpers import check_mkdir, get_subfolders, load_json, search_rgx
 
 try:
     from helpers import get_data_loaders, load_model
@@ -44,8 +44,8 @@ except ModuleNotFoundError:
     from log_tensorboard import log_tensorboard
 
 
-EXE_FILE = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/run_training.py'
-BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_0'
+EXE_FILE = 'run_training.py'
+BASE_FOLDER = 'experiments/exp_0'
 AVAILABLE_GPUS = [0, 1, 2, 3]
 
 SEEDS = [9, 507, 723, 16, 744]
@@ -79,14 +79,6 @@ DEFAULT_KWARGS = {
 }
 
 
-def main():
-    def param_generator():
-        for p in _param_generator(default_kwargs):
-            yield p
-
-    _run(param_generator)
-
-
 class TrainingProcess(pt_run_parallel.ITrainingProcess):
     def __init__(self, **kwargs):
         self.start_time = -1
@@ -110,8 +102,7 @@ def run():
     default_kwargs["nw"] = 4
 
     def param_generator():
-        for p in _param_generator(default_kwargs, base_folder, seeds=SEEDS):
-            yield p
+        yield from _param_generator(default_kwargs, base_folder, seeds=SEEDS)
 
     _run(param_generator)
 
@@ -130,8 +121,7 @@ def one_epoch_test():
     base_folder = join(BASE_FOLDER, 'one_epoch_test')
 
     def param_generator():
-        for p in _param_generator(default_kwargs, base_folder, seeds=[0, 1]):
-            yield p
+        yield from _param_generator(default_kwargs, base_folder, seeds=[0, 1])
 
     _run(param_generator)
 
@@ -181,10 +171,7 @@ def check_tensorboard_one_epoch():
         folder = join(BASE_FOLDER, 'one_epoch_test',
                       'trained_models', folder_name)
 
-        if idx == 0:
-            add_images = True
-        else:
-            add_images = False
+        add_images = idx == 0
         _check_tensorboard(folder, out_name, add_images=add_images)
 
 
@@ -199,11 +186,7 @@ def _check_tensorboard(folder, out_name, *, add_images):
         'cpu'), new_model_path=join(folder, 'model.pt')
     )
 
-    if add_images:
-        data_loaders = get_data_loaders(options)
-    else:
-        data_loaders = None
-
+    data_loaders = get_data_loaders(options) if add_images else None
     log_tensorboard(folder, tb_out, data_loaders,
                     model=model, remove_old_events=True,
                     input_shape=(1, 3, 32, 32)
@@ -235,4 +218,3 @@ if __name__ == '__main__':
     # one_epoch_test()
     # check_tensorboard_one_epoch()
     run()
-    pass
