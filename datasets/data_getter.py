@@ -1,9 +1,7 @@
 from . import ds_cifar10
 from . import ds_cifar10_subset
-from . import ds_mnist
 from . import ds_cifar10_entropy_val_subset
 from . import ds_imnet_entropy
-from . import ds_imagenet
 import warnings
 
 
@@ -34,14 +32,6 @@ def get_data_loaders(dataset, *, batch_size, num_workers, **kwargs):
                 batch_size=batch_size,
                 num_workers=num_workers
             ),
-            'test': None
-        }
-    elif dataset == 'mnist':
-        return{
-            'train': ds_mnist.get_dataloader(
-                True, batch_size=batch_size),
-            'val': ds_mnist.get_dataloader(
-                False, batch_size=batch_size),
             'test': None
         }
 
@@ -79,6 +69,7 @@ def get_data_loaders(dataset, *, batch_size, num_workers, **kwargs):
         }
 
     elif dataset == 'legacy_imagenet':
+        from . import ds_imagenet
         use_from = kwargs.get('use_from', ['pc48'])[0]
         alternate_aug = kwargs.get('alternate_aug', [None])[0]
         bgr_to_rgb = kwargs.get('bgr_to_rgb', [True])[0]

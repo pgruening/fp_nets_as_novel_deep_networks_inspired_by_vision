@@ -1,3 +1,8 @@
+"""
+Creates plots and tables for the JOV jpeg experiments and saves them to 
+OUT_FOLDER.
+
+"""
 import re
 from os.path import join
 
@@ -5,18 +10,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-import seaborn as sns
 from datasets.ds_cifar10_compression_test import Cifar10JpegCompression
-from DLBio.helpers import (MyDataFrame, check_mkdir, load_json,
-                           search_in_all_subfolders, search_rgx,
-                           set_plt_font_size, to_uint8_image)
+from DLBio.helpers import (MyDataFrame, check_mkdir, load_json, search_rgx,
+                           to_uint8_image)
 from DLBio.pytorch_helpers import cuda_to_numpy
 from experiments.eval_methods import save_curve_plot
 from mdutils.mdutils import MdUtils
 from tqdm import tqdm
 
+DO_CREATE_PLOTS = True
+
 RGXS = [r'(CifarJOVFPNet|CifarPyrResNet|CifarResNet|CifarJOVFPNet-RNBasic)_N(\d)_s(\d+)']
-BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_6'
+BASE_FOLDER = 'experiments/exp_6'
 DATA_FOLDER = join(BASE_FOLDER, 'model_predictions')
 MODEL_FOLDERS = [
     'experiments/exp_0/exp_data/trained_models',
@@ -61,7 +66,7 @@ def run_eval():
     create_tables(df_grouped, get_num_changes_col, 'num_changes')
     create_tables(df_grouped, get_error_col, 'robust_error')
 
-    if False:
+    if DO_CREATE_PLOTS:
         create_plots(
             df_grouped, result_out_folder,
             subset=['CifarResNet', 'CifarJOVFPNet-RNBasic'],

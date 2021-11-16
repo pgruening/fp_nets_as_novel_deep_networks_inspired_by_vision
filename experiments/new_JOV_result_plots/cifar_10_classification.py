@@ -1,4 +1,7 @@
 """
+Creates the Cifar-10 classification plots for the JOV paper and writes them
+to OUT_FOLDER
+
 Numbers from Ydelbayev:
 
 Name 	# layers 	# params 	Test err(paper) 	Test err(this impl.)

@@ -1,5 +1,6 @@
 """
 """
+import argparse
 import warnings
 from os.path import join
 
@@ -9,7 +10,6 @@ import model_database_api as api
 import numpy as np
 import seaborn as sns
 from DLBio.helpers import check_mkdir, set_plt_font_size
-import argparse
 
 IM_OUT_FOLDER = join('experiments/new_JOV_result_plots', 'database_results')
 DEG_OF_ES_FNAME = 'degree_of_es_activations'

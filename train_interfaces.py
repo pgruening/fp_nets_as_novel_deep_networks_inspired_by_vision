@@ -5,11 +5,11 @@ import torch.nn.init as init
 from DLBio.pt_train_printer import IPrinterFcn
 from DLBio.pt_training import ITrainInterface
 from DLBio.pytorch_helpers import ActivationGetter, get_device
-from DLBio.train_interfaces import Classification, image_counter, Accuracy, ErrorRate
+from DLBio.train_interfaces import (Accuracy, Classification, ErrorRate,
+                                    image_counter)
 
 import helpers
 from models.conv_blocks import AbsReLUBlock, DWSBlock, FPBlockJOV, INetBlock
-from models.model_evaluation.loggers import MeanAbsActivationLogger
 
 USED_BLOCKS = (AbsReLUBlock, FPBlockJOV, DWSBlock, INetBlock)
 

@@ -1,5 +1,5 @@
 # Inheriting from nvidia/cuda for cuda-support.
-FROM nvidia/cuda:10.0-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
 
 # for more information see:
 # https://github.com/inb-uni-luebeck/docker/blob/master/example_workingdir/Dockerfile
@@ -39,14 +39,18 @@ RUN curl -sLo /home/user/miniconda.sh https://repo.anaconda.com/miniconda/Minico
 
 # Install PyTorch
 RUN conda install -y -c pytorch \
-    cudatoolkit=10.0 \
-    "pytorch=1.4.0=py3.7_cuda10.0.130_cudnn7.6.3_0" \
-    "torchvision=0.5.0=py37_cu100" \
+    cudatoolkit=10.1 \
+    "pytorch=1.6.0" \
+    "torchvision=0.7.0" \
     && conda clean -ya
 
 
 # Install Jupyter Notebook
 RUN conda install -y -c conda-forge jupyterlab
+
+WORKDIR /.local
+RUN chmod 777 /.local
+
 
 RUN pip install git+https://github.com/pgruening/dlbio
 RUN apt update
@@ -65,11 +69,19 @@ RUN chmod 777 /.config/matplotlib
 WORKDIR /.cache
 RUN chmod 777 /.cache
 
+
 # selecting a work dir also creates the directory, so we use it to create /data as a mounting point
 WORKDIR /data
 
 # our actual working directory
 WORKDIR /workingdir
+
+# Install requirements
+COPY requirements.txt /workingdir/requirements.txt
+RUN pip install -r requirements.txt
+
+# update pythonpath
+ENV PYTHONPATH "${PYTHONPATH}:/workingdir"
 
 #make port 8888 available from outside, just in case the container is supposed to run jupyter notebooks
 EXPOSE 8888

@@ -1,16 +1,13 @@
-import os
-import random
-from os.path import join, isdir
-
-import cv2
-import torchvision.transforms
-
-import torch
-from torch.utils.data import DataLoader, Dataset
 import glob
-from tensorpack import imgaug
-import numpy as np
+import os
+from os.path import isdir, join
+
 import config
+import cv2
+import torch
+import torchvision.transforms
+from tensorpack import imgaug
+from torch.utils.data import DataLoader, Dataset
 
 # from pc48
 TRAIN_IMAGES = config.IM_NET_TRAIN

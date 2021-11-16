@@ -1,16 +1,17 @@
 """
 This is only supposed for evaluation purposes. Hence, there is no training set.
 """
-import torchvision
-import torchvision.datasets as datasets
-from config import DATA_FOLDER
-from torch.utils.data import DataLoader, Dataset, SubsetRandomSampler
-from torchvision import transforms
 import json
 import random
-from os.path import isfile
-from DLBio.helpers import load_json
 import warnings
+from os.path import isfile
+
+import torchvision.datasets as datasets
+from config import DATA_FOLDER
+from DLBio.helpers import load_json
+from torch.utils.data import DataLoader, SubsetRandomSampler
+from torchvision import transforms
+
 # this is the imagenet normalization:
 # https://github.com/pytorch/examples/blob/97304e232807082c2e7b54c597615dc0ad8f6173/imagenet/main.py#L197-L198
 # cifar-10 normalization: [0.4914, 0.4822, 0.4465]; [0.2470, 0.2435, 0.2616]

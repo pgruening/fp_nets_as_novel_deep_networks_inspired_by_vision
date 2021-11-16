@@ -1,5 +1,9 @@
+"""
+Uses the results stored in BASE_FOLDER and creates plots and tables in
+OUT_FOLDER.
+"""
 import re
-from os.path import join, splitext
+from os.path import join
 
 from DLBio.helpers import MyDataFrame, check_mkdir, load_json, search_rgx
 from DLBio.kwargs_translator import get_kwargs

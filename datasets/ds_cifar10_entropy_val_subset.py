@@ -2,12 +2,12 @@
 Code copied from:
 https://github.com/akamaster/pytorch_resnet_cifar10/blob/master/trainer.py
 """
-import torchvision
 import torchvision.datasets as datasets
-from config import DATA_FOLDER, CIFAR_10_ENTROPY_SPLIT_FILE
+from config import CIFAR_10_ENTROPY_SPLIT_FILE, DATA_FOLDER
+from DLBio.helpers import load_json
 from torch.utils.data import DataLoader, Sampler
 from torchvision import transforms
-from DLBio.helpers import load_json
+
 from .helpers import HiddenPrints
 
 # this is the imagenet normalization:

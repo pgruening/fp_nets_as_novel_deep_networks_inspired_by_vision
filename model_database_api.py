@@ -3,7 +3,6 @@ from os.path import isdir, isfile, join, splitext
 
 import cv2
 import numpy as np
-import pandas as pd
 from DLBio.helpers import MyDataFrame, load_json, to_uint8_image
 from genericpath import isfile
 

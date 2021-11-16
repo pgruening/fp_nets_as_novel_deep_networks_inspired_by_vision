@@ -16,6 +16,7 @@ experiments/exp_6_1/model_predictions/*.npy
 test.py
 AdvA/*
 data/*
+!data/text.txt
 experiments/exp_8_1/examples/**/*.png
 
 _debug.py

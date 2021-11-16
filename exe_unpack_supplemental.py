@@ -20,7 +20,10 @@ ZFILL = 4
 
 
 def run():
+    print('Unpacking file ...')
     shutil.unpack_archive(ARCHIVE_PATH, EXTRACT_DIR)
+    print('... done.')
+
     files_ = search_in_all_subfolders(RGX, EXTRACT_DIR)
     assert files_
 
