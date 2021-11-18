@@ -33,10 +33,10 @@ python preprocess_sequential.py
 """
 from imagenet_seq.data import Loader as SeqINLoader
 import os
-from config import IMAGENET_LMDB
+from config import IMNET_LMDB_LINK
 
 # set environment variable to imagenet lmbdb file
-os.environ["IMAGENET"] = IMAGENET_LMDB
+os.environ["IMAGENET"] = IMNET_LMDB_LINK
 
 
 def get_dataloader(is_train, batch_size, num_workers, use_cuda=False):
@@ -51,7 +51,8 @@ def get_dataloader(is_train, batch_size, num_workers, use_cuda=False):
     else:
         return SeqINLoader(
             'val', batch_size=batch_size, shuffle=False,
-            num_workers=num_workers, cuda=use_cuda
+            num_workers=num_workers, cuda=use_cuda,
+            drop_last=False
         )
 
 
