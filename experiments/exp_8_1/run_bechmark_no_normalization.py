@@ -24,7 +24,7 @@ from DLBio.pytorch_helpers import get_device, get_num_params
 from helpers import load_model
 import random
 
-BASE_FOLDER = 'fp_net_after_jov/experiments/exp_8_1'
+BASE_FOLDER = 'experiments/exp_8_1'
 
 
 def get_options():

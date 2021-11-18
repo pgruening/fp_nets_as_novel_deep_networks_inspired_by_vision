@@ -14,14 +14,14 @@ import torch
 from datasets import data_getter
 from DLBio import pt_training
 from DLBio.helpers import check_mkdir, load_json, to_uint8_image
-from DLBio.pytorch_helpers import cuda_to_numpy, get_device
+from DLBio.pytorch_helpers import cuda_to_numpy, get_device, get_num_params
 from helpers import load_model
 from tqdm import tqdm
 
 MODEL_FOLDERS_ = [
-    'experiments/imagenet_mobilenet/mobilenet_layer_start_q_2',
-    'experiments/imagenet_mobilenet/mobilenet_layer_start_q_3',
     'experiments/imagenet_mobilenet/vanilla_mobilenet_imagenet',
+    'experiments/imagenet_mobilenet/mobilenet_layer_start_q_3',
+    'experiments/imagenet_mobilenet/mobilenet_layer_start_q_2',
 
 ]
 DEVICE = get_device()
@@ -44,6 +44,8 @@ def run():
             from_par_gpu=True
         ).eval()
         model = model.to(DEVICE)
+        print(folder.split('/')[-1])
+        print(f'num params: {get_num_params(model)}')
 
         out = _eval(model, dataloader)
         accuracy = _acc(out)

@@ -1,3 +1,7 @@
+"""
+Check if the values written in the log can be reproduced by classifying each
+image separately.
+"""
 from os.path import join
 
 import numpy as np
@@ -6,13 +10,11 @@ from DLBio.helpers import load_json, search_rgx
 from DLBio.pytorch_helpers import get_device
 from tqdm import tqdm
 
-BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_0/exp_data/trained_models'
+BASE_FOLDER = 'experiments/exp_0/exp_data/trained_models'
 RGX = r'(CifarJOVFPNet|CifarPyrResNet|CifarResNet)_N(\d)_s(\d+)'
 
 
 def run():
-    import sys
-    sys.path.append('/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov')
     from datasets.ds_cifar10 import get_dataset
     from helpers import load_model
 

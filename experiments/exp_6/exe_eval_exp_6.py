@@ -14,7 +14,7 @@ from experiments.eval_methods import save_curve_plot
 from tqdm import tqdm
 
 RGXS = [r'(CifarJOVFPNet|CifarPyrResNet|CifarResNet|CifarJOVFPNet-RNBasic)_N(\d)_s(\d+)']
-BASE_FOLDER = '/nfshome/gruening/my_code/DLBio_repos/fp_net_after_jov/experiments/exp_6'
+BASE_FOLDER = 'experiments/exp_6'
 DATA_FOLDER = join(BASE_FOLDER, 'model_predictions')
 MODEL_FOLDERS = [
     'experiments/exp_0/exp_data/trained_models',

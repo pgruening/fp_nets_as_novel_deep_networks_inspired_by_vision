@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 from DLBio.helpers import check_mkdir, search_rgx
 from DLBio.kwargs_translator import get_kwargs, to_kwargs_str
-from DLBio.pt_training import _torch_save_model
+from DLBio.pt_training import torch_save_model
 from DLBio.pytorch_helpers import ActivationGetter, get_device
 from helpers import load_model
 from models.model_getter import get_model
@@ -102,21 +102,20 @@ class DatabaseTest(unittest.TestCase):
                         op = key.split('-')[0]
                         x = row[key]
                         # since q=2 there are nan values for res and lower
-                        if op in ['res', 'lower']:
-                            if row['filter_idx'] < first_block_dim:
-                                self.assertEqual(
-                                    x, 0, msg=(pos, key, row[key]))
-                            else:
-                                self.assertTrue(
-                                    x != x, msg=(pos, key, row[key]))
+                        if (
+                            op in ['res', 'lower']
+                            and row['filter_idx'] < first_block_dim
+                            or op not in ['res', 'lower']
+                        ):
+                            self.assertEqual(x, 0, msg=(pos, key, x))
                         else:
-                            self.assertEqual(x, 0, msg=(pos, key, row[key]))
+                            self.assertTrue(x != x, msg=(pos, key, x))
             else:
                 # All other degofes values should be nan
                 for _, row in tmp.iterrows():
                     for key in keys_:
                         x = row[key]
-                        self.assertTrue(x != x, msg=(pos, key, row[key]))
+                        self.assertTrue(x != x, msg=(pos, key, x))
 
     def setUp(self):
         model_folder = 'allzero_CifarJOVFPNet'
@@ -171,7 +170,7 @@ class DatabaseTest(unittest.TestCase):
         model(test_input)
         assert (test_logger.out**2.).sum() == 0
 
-        _torch_save_model(model, save_path, True)
+        torch_save_model(model, save_path, True)
         print(f'saved model to: {save_path}')
 
         model = load_model(options, get_device(), new_model_path=save_path)
@@ -238,7 +237,7 @@ class DatabaseTest(unittest.TestCase):
         else:
             # set each degree of end-stopping key to full number of nans
             # since it was not computed
-            for key in deg_of_es_check.keys():
+            for key in deg_of_es_check:
                 to_check[key] = expected_dim
 
         self.check_num_nan_values(
@@ -303,7 +302,7 @@ class DatabaseTest(unittest.TestCase):
         else:
             # set each degree of end-stopping key to full number of nans
             # since it was not computed
-            for key in deg_of_es_check.keys():
+            for key in deg_of_es_check:
                 to_check[key] = expected_dim
 
         self.check_num_nan_values(

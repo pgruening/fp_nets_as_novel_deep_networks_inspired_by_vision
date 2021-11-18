@@ -74,9 +74,14 @@ Yes the text was read carefully and compared to the code.
 
 The input image was plotted and looks plausible for both Cifar-10 and ImageNet.
 
+### Can we reproduce the database results within the docker environment?
+
 ## Adversarial Examples
+
 The eval code was read again.
+
 ### Is the order of FGSN and normalization correct?
+
 An assertion statement makes sure that the input image is in [0, 1]. The Cifar dataloader has a do-not-normalize flag. The BaseModel for all Cifar models has an attribute 'pre_transform' which is used for normalization before the actual forward pass. All tested models are derived from this class. Furthermore, the original accuracies reproduce the classification results and the number of changes are zero for eps = 0.
 
 ### Do the adversarial examples look plausible?
@@ -86,8 +91,16 @@ The plotted examples that are also present in the paper are plotted directly fro
 
 The code was read again. The tables are consistent with the plots.
 
+### Given the models, are the FGSM results reproducible?
+
+We tested the results for a few models. They were almost identical, even when running on a different PC and in an Docker env with another version. The very few changes are negligible; here is an example: 0.8682 vs. 0.8681.
+
 
 ## Jpeg compression
+
+### Do the compressed images look right?
+
+Using Tensorboard, one can clearly see a deterioration of the image quality.
 
 ### Are there possibly errors due to incorrect normalization?
 All images are pre-computed via an OpenCV algorithm. The algorithm is applied directly to the uint8 images and generates a set of uint8 images.
@@ -96,7 +109,9 @@ All images are pre-computed via an OpenCV algorithm. The algorithm is applied di
 
 The code was read again. The tables are consistent with the plots.
 
+### Given the models, are the Compression results reproducible using Docker?
 
+We've tested this for one model. The results appear to be identical.
 
 ## CIGA example
 

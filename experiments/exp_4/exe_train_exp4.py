@@ -45,8 +45,7 @@ DEFAULT_KWARGS = {
     'es_metric': 'val_acc',
 }
 
-MODELS = ['CifarJOVFPNet-RNBasic', 'CifarAbsReLU-LS-realAbs',
-          'CifarAbsReLU-LS-NoNorm', 'CifarJOVFPNet-NoNorm']
+MODELS = ['CifarJOVFPNet-RNBasic']
 
 
 class TrainingProcess(pt_run_parallel.ITrainingProcess):

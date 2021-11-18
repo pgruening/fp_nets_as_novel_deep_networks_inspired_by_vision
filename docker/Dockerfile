@@ -1,19 +1,4 @@
-# Inheriting from nvidia/cuda for cuda-support.
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
-
-# for more information see:
-# https://github.com/inb-uni-luebeck/docker/blob/master/example_workingdir/Dockerfile
-
-# NOTE, build with: "docker build -t dl_workingdir ."
-# or by executing the "docker_build.sh" script.
-
-#https://code.visualstudio.com/docs/containers/quickstart-python
-
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE 1
-
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED 1
+FROM nvidia/cuda:11.1-cudnn8-runtime-ubuntu18.04
 
 # Install some basic utilities
 RUN apt-get update && apt-get install -y \
@@ -30,23 +15,52 @@ RUN mkdir /home/user
 # Install Miniconda and Python 3.8
 ENV CONDA_AUTO_UPDATE_CONDA=false
 ENV PATH=/home/user/miniconda/bin:$PATH
+
+# Install Miniconda and Python 3.8
+ENV CONDA_AUTO_UPDATE_CONDA=false
+ENV PATH=/home/user/miniconda/bin:$PATH
 RUN curl -sLo /home/user/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh \
     && chmod +x /home/user/miniconda.sh \
     && /home/user/miniconda.sh -b -p /home/user/miniconda \
     && rm /home/user/miniconda.sh \
-    && conda install -y python==3.7 \
+    && conda install -y python==3.6.9 \
     && conda clean -ya
 
-# Install PyTorch
-RUN conda install -y -c pytorch \
-    cudatoolkit=10.1 \
-    "pytorch=1.6.0" \
-    "torchvision=0.7.0" \
-    && conda clean -ya
 
 
 # Install Jupyter Notebook
 RUN conda install -y -c conda-forge jupyterlab
+
+# selecting a work dir also creates the directory, so we use it to create /data as a mounting point
+WORKDIR /data
+WORKDIR /imagenet_lmdb
+WORKDIR /imagenet_images_train
+WORKDIR /imagenet_images_val
+
+# our actual working directory
+WORKDIR /workingdir
+
+#make port 8888 available from outside, just in case the container is supposed to run jupyter notebooks
+EXPOSE 8888
+
+#################################################################################################################################################################
+#################################################################################################################################################################
+#################################################################################################################################################################
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
+
+# Install pip requirements
+#ADD requirements.txt .
+#RUN python -m pip install -r requirements.txt
+WORKDIR /.cache
+RUN chmod 777 /.cache
+
+WORKDIR /.config/matplotlib
+RUN chmod 777 /.config/matplotlib
 
 WORKDIR /.local
 RUN chmod 777 /.local
@@ -57,31 +71,30 @@ RUN apt update
 RUN apt install libgl1-mesa-glx -y
 RUN apt install libglib2.0-0 -y
 
-RUN pip install seaborn
-
 WORKDIR /other_py_packages
-RUN git clone https://github.com/cybertronai/pytorch-lamb.git
-RUN pip install -e ./pytorch-lamb
+RUN git clone https://github.com/pgruening/sequential-imagenet-dataloader.git
+RUN pip install -e ./sequential-imagenet-dataloader
 
-# for matplotlib
-WORKDIR /.config/matplotlib
-RUN chmod 777 /.config/matplotlib
-WORKDIR /.cache
-RUN chmod 777 /.cache
-
-
-# selecting a work dir also creates the directory, so we use it to create /data as a mounting point
-WORKDIR /data
-
-# our actual working directory
+WORKDIR /workingdir
+WORKDIR /workingdir/data
+RUN chmod 777 /workingdir/data
 WORKDIR /workingdir
 
 # Install requirements
 COPY requirements.txt /workingdir/requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install torchattacks
+
+RUN pip install tensorpack==0.8.7
+RUN pip install tensorflow==1.4
+
+RUN apt-get update ##[edited]
+RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 # update pythonpath
 ENV PYTHONPATH "${PYTHONPATH}:/workingdir"
 
-#make port 8888 available from outside, just in case the container is supposed to run jupyter notebooks
-EXPOSE 8888
+# matplotlib config (used by benchmark)
+RUN mkdir -p /root/.config/matplotlib
+RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc

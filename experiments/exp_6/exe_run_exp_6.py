@@ -44,6 +44,20 @@ def get_folders():
 
 
 def compute_and_save_results(folder):
+    """Loads a model from '[folder]/model.pt'. The model classifies ten
+    different compression rates {0,...,90} of each image of the Cifar-10
+    testset. 
+    All predictions and the actual class are save as a numpy file. The file
+    contains a matrix of shape (10000, 11). Each row corresponds to an image,
+    the first column is the actual label, all subsequent columns are the model
+    predictions at compression 0, 10, 20, ..., 90.
+
+    Parameters
+    ----------
+    folder : string
+        folder containing the model with filename model.pt
+    """
+    print(f'Running folder: {folder}')
     device = get_device()
     model = load_model(
         join(folder, 'opt.json'), device,
@@ -104,5 +118,5 @@ def check_data_on_tensorboard():
 
 
 if __name__ == '__main__':
-    create_data()
-    # check_data_on_tensorboard()
+    # create_data()
+    check_data_on_tensorboard()
