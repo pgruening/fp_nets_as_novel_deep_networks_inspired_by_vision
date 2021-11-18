@@ -18,19 +18,34 @@ USER = 'philipp'
 if USER == 'your_name':
     DATA_FOLDER = 'data'
     # see imagenet_sequential for more information
-    IMAGENET_LMDB = 'path_to_lmdb'
-    IM_NET_TRAIN = {'pc48': 'your/path'}
-    IM_NET_VAL = {'pc48': 'your/path'}
+    IMAGENET_FOLDER_WITH_LMDB = '/imagenet_lmdb'
+    IM_NET_TRAIN = {'link': '/imagenet_images_train'}
+    IM_NET_VAL = {'link': '/imagenet_images_val'}
     IM_NET_ENTROPY_SUBSET = 'data/im_net_entropy/npy'
     PRINT_FREQUENCY = 50
     CIFAR_10_ENTROPY_SPLIT_FILE = 'data/reduced_valset.json'
 
 elif USER == 'philipp':
     DATA_FOLDER = 'data'
-    # see imagenet_sequential for more information
-    IMAGENET_LMDB = 'path_to_lmdb'
-    IM_NET_TRAIN = {'pc48': 'your/path'}
-    IM_NET_VAL = {'pc48': 'your/path'}
+
+    # Path to folder containing the files ILSVRC-train.lmdb & ILSVRC-val.lmdb
+    IMAGENET_FOLDER_WITH_LMDB = '/nfshome/gruening/my_code'
+
+    # Path to folder containing the ImageNet subolders with images
+    IM_NET_TRAIN = {
+        'original': '/nfshome/gruening/my_code/mount_II/hertel/imagenet/jpeg/train',
+        'pc48': '/data_ssd1/hertel/imagenet/jpeg/train',
+        'link': '/imagenet_images_train'
+    }
+    # from pc48
+    IM_NET_VAL = {
+        'original': '/nfshome/gruening/my_code/mount_II/hertel/imagenet/jpeg/validation',
+        'pc48': '/data_ssd1/hertel/imagenet/jpeg/validation',
+        'link': '/imagenet_images_val'
+    }
+
+    IMNET_LMDB_LINK = '/imagenet_lmdb'
+
     IM_NET_ENTROPY_SUBSET = 'data/im_net_entropy/npy'
     PRINT_FREQUENCY = 50
     CIFAR_10_ENTROPY_SPLIT_FILE = 'data/reduced_valset.json'
