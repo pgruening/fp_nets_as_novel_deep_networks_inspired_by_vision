@@ -26,3 +26,5 @@ imagenet_examples/*
 
 saved_models/**
 jov_data.zip
+exe_list_all_files.py
+all_files.txt
