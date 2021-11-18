@@ -26,13 +26,13 @@ MODEL_FOLDERS_ = [
 ]
 DEVICE = get_device()
 
-BATCH_SIZE = 64
+BATCH_SIZE = 50
 
 
 def run():
     dataloader = data_getter.get_data_loaders(
         'legacy_imagenet', batch_size=BATCH_SIZE, num_workers=0,
-        use_from=['pc14']
+        use_from=['link']
     )['val']
     for folder in MODEL_FOLDERS_:
         model = load_model(

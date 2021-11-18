@@ -3,6 +3,16 @@ Code to reproduce JOV-Paper results for the FP-net-50, based on the ResNet-50
 trained on the sequential-dataloader ImageNet dataset. This dataloader has some 
 augmentations and pre-processing steps that differ from the 'legacy'-ImageNet 
 dataset where the MobileNet was trained on.
+
+Numbers in the paper:
+
+(from https://github.com/tensorpack/tensorpack/tree/master/examples/ResNet):
+ResNet-50 (baseline)25.5 23.61 
+
+Our Results:
+FP-net-50 (q=0.8)24.3 23.80
+FP-net-50 (q=1)25.9 23.24
+
 """
 import json
 import os
@@ -21,16 +31,18 @@ import config
 
 MODEL_FOLDERS_ = [
     'experiments/imagenet_resnet/resnet50_imagenet_layer_start_q08',
-    'experiments/imagenet_resnet/resnet50_imagenet_layer_start_q1'
+    # 'experiments/imagenet_resnet/resnet50_imagenet_layer_start_q1'
 ]
 DEVICE = get_device()
 
-BATCH_SIZE = 64
+BATCH_SIZE = 50
+
+USE_SEQUENTIAL = True
 
 
 def run():
-    os.environ["IMAGENET"] = config.IMAGENET_LMDB
-    if False:
+    os.environ["IMAGENET"] = config.IMNET_LMDB_LINK
+    if USE_SEQUENTIAL:
         dataloader = data_getter.get_data_loaders(
             'sequential_imagenet', batch_size=BATCH_SIZE, num_workers=1,
             use_cuda=[False]
@@ -39,7 +51,7 @@ def run():
         dataloader = data_getter.get_data_loaders(
             'legacy_imagenet', batch_size=BATCH_SIZE, num_workers=0,
             alternate_aug=['facebook'],
-            use_from=['pc14'],
+            use_from=['link'],
             bgr_to_rgb=[False]
         )['val']
 
