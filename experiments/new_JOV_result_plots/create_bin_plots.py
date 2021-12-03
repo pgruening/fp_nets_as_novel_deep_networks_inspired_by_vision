@@ -35,9 +35,7 @@ def get_fval_xy(x, y, gamma0, lv=1., lg=1.):
     phi = .5 * gamma
     c1 = lv * lg
 
-    out = c1 * ((y * np.cos(phi))**2. - (x * np.sin(phi))**2.)
-
-    return out
+    return c1 * ((y * np.cos(phi))**2. - (x * np.sin(phi))**2.)
 
 
 def bin_signal(x, num_bins=100):

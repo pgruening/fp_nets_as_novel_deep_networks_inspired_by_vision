@@ -86,7 +86,7 @@ def ln(w, x):
     return (w * x).sum(-1)
 
 
-def attack(f, gf, x0, eps, tau):
+def attack(f, gf, x0, eps, tau, mod=100, num_iterations=10000):
     """The CIGA algorithm as described in Equation 6 in the paper.
 
     Parameters
@@ -111,10 +111,10 @@ def attack(f, gf, x0, eps, tau):
     nu = np.zeros(x0.shape)
     positions = []
     losses = []
-    for i in range(10000):
+    for i in range(num_iterations):
         q = nu + tau * gf(x0 + nu)
         nu = q.clip(min=-eps, max=eps)
-        if i % 100 == 0:
+        if i % mod == 0:
             positions.append(x0 + nu)
             # losses.append((f(x0 + nu) - f(x0)) / (f(x0) + 1.))
             losses.append(f(x0 + nu))
@@ -166,30 +166,35 @@ def plot(pos, loss, f, x_opt, xlabel, ylabel):
     ax.set_ylabel(ylabel, fontweight='bold')
 
 
-set_plt_font_size(32)
+def run():
+    set_plt_font_size(32)
 
-# Setup
-eps = 1.
-tau = .001
-x0 = np.array([.01, .3]).reshape(1, 2)
+    # Setup
+    eps = 1.
+    tau = .001
+    x0 = np.array([.01, .3]).reshape(1, 2)
 
-# LN-neuron
-w = np.array([1., 0.]).reshape(1, 2)
-def f(x): return ln(w, x)
-def gf(x): return get_ln_grad(w, x)
+    # LN-neuron
+    w = np.array([1., 0.]).reshape(1, 2)
+    def f(x): return ln(w, x)
+    def gf(x): return get_ln_grad(w, x)
+
+    pos, loss = attack(f, gf, x0, eps, tau)
+    plot(pos, loss, f, [w[0, 0], w[0, 1]], 'w', 'o')
+    plt.savefig(join(BASE_FOLDER, 'ln.png'))
+    plt.savefig(join(BASE_FOLDER, 'ln.pdf'))
+
+    # FP-neuron
+    v = np.array([1., 0.]).reshape(1, 2)
+    g = np.array([0., 1.]).reshape(1, 2)
+    def f(x): return fp(v, g, x)
+    def gf(x): return get_fp_grad(v, g, x)
+
+    pos, loss = attack(f, gf, x0, eps, tau)
+    plot(pos, loss, f, [1., 1.], 'v', 'g')
+    plt.savefig(join(BASE_FOLDER, 'fp.png'))
+    plt.savefig(join(BASE_FOLDER, 'fp.pdf'))
 
 
-pos, loss = attack(f, gf, x0, eps, tau)
-plot(pos, loss, f, [w[0, 0], w[0, 1]], 'w', 'o')
-plt.savefig(join(BASE_FOLDER, 'ln.png'))
-
-# FP-neuron
-v = np.array([1., 0.]).reshape(1, 2)
-g = np.array([0., 1.]).reshape(1, 2)
-def f(x): return fp(v, g, x)
-def gf(x): return get_fp_grad(v, g, x)
-
-
-pos, loss = attack(f, gf, x0, eps, tau)
-plot(pos, loss, f, [1., 1.], 'v', 'g')
-plt.savefig(join(BASE_FOLDER, 'fp.png'))
+if __name__ == '__main__':
+    run()
