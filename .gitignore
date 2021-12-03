@@ -28,3 +28,4 @@ saved_models/**
 jov_data.zip
 exe_list_all_files.py
 all_files.txt
+experiments/new_JOV_result_plots/gif_image/*.png
