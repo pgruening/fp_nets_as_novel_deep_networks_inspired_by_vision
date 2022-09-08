@@ -120,3 +120,28 @@ We've tested this for one model. The results appear to be identical.
 The code was evaluated, compared to the text and documented.
 
 
+## Taylor computation
+
+### Is Equation 25 correct?
+
+A quadratic taylor expansion looks like this:
+
+$$T_2 f(x,a) = f(a) + f^{'}(a)(x-a) + \frac{1}{2} f^{''}(a)(x-a)^2$$
+
+Thus, the quadratic coefficient is:
+
+$$\frac{1}{2} f^{''}(a)$$
+
+Equation (24) can be reduced to:
+
+$$\sqrt{(a x^2 + b)} $$
+
+The derivative of this function is (according to WolframAlpha):
+
+$$\frac{ab}{(b + a x^2)^{3/2}}$$
+
+Setting $x=0$ yields:
+
+$$\frac{ab}{b^{3/2}} = \frac{ab}{b \sqrt{b}}= \frac{a}{\sqrt{b}}$$
+
+Note that $\frac{1}{2}$ needs to be multiplied to this.

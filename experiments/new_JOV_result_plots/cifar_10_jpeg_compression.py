@@ -51,10 +51,10 @@ COLORS = {
 }
 
 RENAME = {
-    'CifarJOVFPNet': 'FP-net',
+    'CifarJOVFPNet': 'E-PyrNet-R',  # 'FP-net',
+    'CifarPyrResNet': 'PyrNet',  # 'PyrBlockNet',
     'CifarResNet': 'ResNet',
-    'CifarPyrResNet': 'PyrBlockNet',
-    'CifarJOVFPNet-RNBasic': 'FP-net (basic)'
+    'CifarJOVFPNet-RNBasic': 'E-ResNet-R',  # 'FP-net (basic)'
 }
 
 
